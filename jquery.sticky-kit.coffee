@@ -5,6 +5,15 @@
 $ = @jQuery or window.jQuery
 
 win = $ window
+
+getWidth = (ele)->
+  width = if ele.css("box-sizing") is "border-box" then ele.outerWidth() else ele.width()
+  width = parseInt(width, 10)
+  while(width is 0)
+    ele = ele.parent()
+    width = getWidth(ele)
+  width
+
 $.fn.stick_in_parent = (opts={}) ->
   {
     sticky_class
@@ -153,15 +162,10 @@ $.fn.stick_in_parent = (opts={}) ->
           # fixing
           if scroll > top
             fixed = true
-            css = {
+            css = 
               position: "fixed"
               top: offset
-            }
-
-            css.width = if elm.css("box-sizing") == "border-box"
-              elm.outerWidth() + "px"
-            else
-              elm.width() + "px"
+              width : getWidth(elm) + "px"
 
             elm.css(css).addClass(sticky_class)
 
